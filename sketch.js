@@ -1,12 +1,11 @@
 let bubbles = [];
-let gravity = new p5.Vector(0, 0.05);
-let score = 20;
+let gravity = new p5.Vector(0, 0.25);
+//let wind = new p5.Vector(0,0);
+let score = 40;
 let timerMax = 120;
 let timer = timerMax;
 let popSound = new Audio("Pop.mp3");
-let backgroundC = 60;
-let tSize = 45;
-let tScaler = 1;
+let backgroundC = [60,60,60, 99];
 
 function setup()
 {
@@ -20,10 +19,11 @@ function setup()
 function draw()
 {
 	background(backgroundC);
-
+	
 	for (let i = 0; i < bubbles.length; i++)
 	{
 		bubbles[i].applyForce(gravity);
+		//bubbles[i].applyForce(wind);
 		bubbles[i].update();
 		bubbles[i].changeColor();
 
@@ -39,8 +39,10 @@ function draw()
 
 	if (timer <= 0)
 	{
-		bubbles.push(new Bubble(windowWidth/2, windowHeight - 40, random(10,40)));//random(40, windowWidth - 40), random(40, windowHeight/2), random(10, 40)));
-		timerMax+= random(-5,5);
+		for (let i = random(0, 2); i < 3; i++)
+			bubbles.push(new Bubble(windowWidth/2, windowHeight - 40, random(10,40)));
+		
+		timerMax+= random(-10,5);
 		timer = timerMax;
 	}
 	else
@@ -65,18 +67,20 @@ function mousePressed()
 		{
 			popSound.play();
 			bubbles.splice(i, 1);
-			score++;
+			score += 3;
 			break;
 		}
 		else if (i == bubbles.length - 1)
+		{
 			score--;
+		}
 	}
 }
 
 function windowResized()
 {
 	createCanvas(windowWidth, windowHeight);
-	background(60);
+	background(backgroundC);
 }
 
 class Bubble
@@ -85,7 +89,7 @@ class Bubble
 	{
 		// Movement Vectors
 		this.pos = new p5.Vector(x,y);
-		this.vel = new p5.Vector(random(-3,3),random(-7, -9));
+		this.vel = new p5.Vector(random(-9,9),random(-15, -40));
 		this.acc = new p5.Vector(0,0);
 
 		// Color Variables
@@ -95,7 +99,7 @@ class Bubble
 
 		this.rad = rad;
 		this.d = this.rad*2;
-		this.lifespan = random(250, 350);
+		this.lifespan = random(75, 150);
 	}
 
 	show()
@@ -113,7 +117,7 @@ class Bubble
 	update()
 	{
 		this.vel.add(this.acc);
-		this.pos.add(this.vel.x, this.vel.y);
+		this.pos.add(this.vel);
 		this.acc.mult(0);
 
 		this.lifespan--;
@@ -159,31 +163,19 @@ function scoreboard()
 		timer = 250000;
 		bubbles.splice(0, bubbles.length);
 		
-		if (tSize >= 45)
-			tScaler = 1;
-		else if (tSize <= 90)
-			tScaler = -1;
-		
-		tSize += tScaler;
-		
-		textSize(tSize);
+		textSize(45);
 		stroke(0);
-		text("You Lost!", windowWidth/2 -tSize, windowHeight/2 -tSize);
+		textAlign(CENTER, CENTER);
+		text("You Lost!", windowWidth/2, windowHeight/2);
 	}
-	else if (score >= 60)
+	else if (score >= 100)
 	{
 		backgroundC = [0,256,0];
 		timer = 250000;
 		
-		if (tSize >= 45)
-			tScaler = 1;
-		else if (tSize <= 90)
-			tScaler = -1;
-		
-		tSize += tScaler;
-		
-		textSize(tSize);
+		textSize(45);
 		stroke(0);
-		text("You Won!", windowWidth/2 -tSize, windowHeight/2 -tSize);
+		textAlign(CENTER, CENTER);
+		text("You Won!", windowWidth/2, windowHeight/2);
 	}
 }

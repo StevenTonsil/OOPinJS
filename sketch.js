@@ -21,7 +21,7 @@ function setup()
 {
 	createCanvas(windowWidth, windowHeight);
 	background(backgroundC);
-	bubbles.push(new Bubble(windowWidth/2, windowHeight - 40, random(10,40)));
+	bubbles.push(new Bubble(windowWidth/2, windowHeight - 40, random(25,40)));
 	
 	// Changes the mouse to a crosshair
 	cursor(CROSS);
@@ -31,14 +31,16 @@ function draw()
 {
 	background(backgroundC);
 	
+	scoreboard();	
+	
 	// Loops through all of the balls and runs their class functions
 	for (let i = 0; i < bubbles.length; i++)
 	{
 		bubbles[i].applyForce(gravity);
 		bubbles[i].update();
 		bubbles[i].changeColor();
-		
-		// Checks if bubbles are alive or if it hit the walls
+	
+		// Checks if bubbles are alive or if walls were hit
 		if (bubbles[i].lifespan < 0 || bubbles[i].checkEdges())
 		{
 			score--;
@@ -48,8 +50,6 @@ function draw()
 		else
 			bubbles[i].show();
 	}
-	
-	scoreboard();
 }
 
 function mousePressed()
@@ -61,7 +61,7 @@ function mousePressed()
 		{
 			popSound.play();
 			bubbles.splice(i, 1);
-			score += 3;
+			score += 5;
 			if (timerMax > 20)
 				timerMax -= random(2, 5);
 			break;
@@ -86,13 +86,13 @@ class Bubble
 	{
 		// Movement Vectors
 		this.pos = new p5.Vector(x,y);
-		this.vel = new p5.Vector(random(-9,9),random(-20, -40));
+		this.vel = new p5.Vector(random(-9,9),random(-25, -40));
 		this.acc = new p5.Vector(0,0);
 
 		// Color Variables
 		this.r = 0;
-		this.b = 256;
-		this.g = 256;
+		this.b = 255;
+		this.g = 255;
 		
 		// Size of the bubble
 		this.rad = rad;
@@ -105,8 +105,8 @@ class Bubble
 	// Displays the bubble
 	show()
 	{
-		noFill();
 		stroke(this.r,this.b,this.g);
+		noFill();
 		ellipse(this.pos.x, this.pos.y, this.d, this.d);
 	}
 	
@@ -131,10 +131,31 @@ class Bubble
 	
 	// Changes Color of the bubble
 	changeColor()
-	{
-		this.r += random(-10,10);
-		this.b += random(-10,10);
-		this.g += random(-10,10);
+	{	
+		if (((this.r >= 255 || this.r <= 0) || (this.b >= 255 || this.b <= 0)) || (this.g >= 255 || this.g <= 0))
+		{
+			if (this.r >= 255)
+				this.r += random(-20, 0);
+			else if (this.r <= 0)
+				this.r += random(0, 20);
+			
+			if (this.b >= 255)
+				this.b += random(-20, 0);
+			else if (this.b <= 0)
+				this.b += random(0, 20);
+			
+			if (this.g >= 255)
+				this.g += random(-20, 0);
+			else if (this.g <= 0)
+				this.g += random(0, 20);
+		}
+		
+		else
+		{
+			this.r += random(-20, 20);
+			this.b += random(-20, 20);
+			this.g += random(-20, 20);
+		}
 	}
 	
 	// Uses distance formula to check if cordinates where in the circle
@@ -164,12 +185,12 @@ function scoreboard()
 	if (timer <= 0)
 	{
 		for (let i = random(0, 2); i < 3; i++)
-			bubbles.push(new Bubble(windowWidth/2, windowHeight - 40, random(20,40)));
+			bubbles.push(new Bubble(windowWidth/2, windowHeight - 40, random(25,40)));
 		
 		//timerMax+= random(-5,2);
 		timer = timerMax;
 	}
-	else
+	else //if (compareArrays(backgroundC ,[60,60,60,90]))
 		timer--;
 	
 	// Loads the score
@@ -180,7 +201,7 @@ function scoreboard()
 	// Checks if you lost
 	if (score <= 0)
 	{
-		backgroundC = [256,0,0];
+		backgroundC = [255,0,0];
 		timer = 250000;
 		bubbles.splice(0, bubbles.length);
 		
@@ -193,7 +214,7 @@ function scoreboard()
 	// Checks if you won
 	else if (score >= 100)
 	{
-		backgroundC = [0,256,0];
+		backgroundC = [0,255,0];
 		timer = 250000;
 		
 		textSize(45);
@@ -201,4 +222,13 @@ function scoreboard()
 		textAlign(CENTER, CENTER);
 		text("You Won!", windowWidth/2, windowHeight/2);
 	}
+}
+
+function compareArrays(a, b) {
+    var i = a.length;
+    if (i != b.length) return false;
+    while (i--) {
+        if (a[i] !== b[i]) return false;
+    }
+    return true;
 }

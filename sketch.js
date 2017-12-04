@@ -5,7 +5,7 @@ let bubbles = [];
 let gravity = new p5.Vector(0, 0.6);
 
 // Scoreboard Variable
-let score = 40;
+let score = 0;
 
 // Timer Variables
 let timerMax = 120;
@@ -199,7 +199,7 @@ function scoreboard()
 	text("Score: " + score, windowWidth - 160, 40);
 	
 	// Checks if you lost
-	if (score <= 0)
+	if (score < 0)
 	{
 		backgroundC = [255,0,0];
 		timer = 250000;
@@ -212,7 +212,7 @@ function scoreboard()
 	}
 	
 	// Checks if you won
-	else if (score >= 100)
+	else if (score >= 50)
 	{
 		backgroundC = [0,255,0];
 		timer = 250000;

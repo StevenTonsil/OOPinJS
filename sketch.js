@@ -190,7 +190,7 @@ function scoreboard()
 		//timerMax+= random(-5,2);
 		timer = timerMax;
 	}
-	else //if (compareArrays(backgroundC ,[60,60,60,90]))
+	else 
 		timer--;
 	
 	// Loads the score
@@ -222,13 +222,4 @@ function scoreboard()
 		textAlign(CENTER, CENTER);
 		text("You Won!", windowWidth/2, windowHeight/2);
 	}
-}
-
-function compareArrays(a, b) {
-    var i = a.length;
-    if (i != b.length) return false;
-    while (i--) {
-        if (a[i] !== b[i]) return false;
-    }
-    return true;
 }
